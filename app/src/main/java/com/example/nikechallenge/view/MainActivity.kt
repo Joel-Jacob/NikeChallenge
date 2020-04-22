@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity() {
         setUp()
     }
 
-    private fun setUp(){
+    private fun setUp() {
         searchButton.setOnClickListener {
             loadingSpinner.visibility = View.VISIBLE
             viewModel.getDefinitions(searchInput.text.toString())
@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity() {
             recyclerView.smoothScrollToPosition(0)
         }
 
-        val spinnerObserver = Observer<Boolean>{
+        val spinnerObserver = Observer<Boolean> {
             loadingSpinner.visibility = View.GONE
         }
 

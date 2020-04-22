@@ -1,5 +1,6 @@
 package com.example.nikechallenge
 
+import android.widget.Button
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
 
@@ -20,5 +21,10 @@ class ExampleInstrumentedTest {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
         assertEquals("com.example.nikechallenge", appContext.packageName)
+    }
+
+    @Test
+    fun checkUI() {
+
     }
 }

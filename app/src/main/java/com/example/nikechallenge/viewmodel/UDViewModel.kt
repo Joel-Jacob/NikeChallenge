@@ -17,47 +17,50 @@ class UDViewModel(application: Application) : AndroidViewModel(application) {
     val uDAdapter = UDAdapter()
     var upDownBoolean = true
     val compositeDisposable = CompositeDisposable()
-    val spinner : MutableLiveData<Boolean> by lazy {
+    val spinner: MutableLiveData<Boolean> by lazy {
         MutableLiveData<Boolean>()
     }
     var definitions = ArrayList<X>()
 
-    fun getDefinitions(word: String){
+    fun getDefinitions(word: String) {
         compositeDisposable.add(
             uDRetrofit
                 .getDefinitionResponse(word)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({response->
-                    for (item in response.list){
-                        item.definition = item.definition.replace("[","")
-                        item.definition = item.definition.replace("]","")
+                .subscribe({ response ->
+                    for (item in response.list) {
+                        item.definition = item.definition.replace("[", "")
+                        item.definition = item.definition.replace("]", "")
                     }
                     uDAdapter.definitionList = ArrayList(response.list)
                     definitions = uDAdapter.definitionList
                     uDAdapter.notifyDataSetChanged()
                     spinner.value = true
-                },{
-                    Toast.makeText(getApplication(),"There was an error loading definitions", Toast.LENGTH_LONG).show()
+                }, {
+                    Toast.makeText(
+                        getApplication(),
+                        "There was an error loading definitions",
+                        Toast.LENGTH_LONG
+                    ).show()
                     spinner.value = true
                     Log.d("TAG_X", "Error: ${it.message}")
                 })
         )
     }
 
-    fun sortList(){
+    fun sortList() {
         //up: true
         //down: false
-        if(upDownBoolean){
+        if (upDownBoolean) {
             definitions = ArrayList(definitions.sortedByDescending { it.thumbs_up })
             uDAdapter.definitionList = definitions
-            Toast.makeText(getApplication(),"Sorted by thumbs up", Toast.LENGTH_LONG).show()
+            Toast.makeText(getApplication(), "Sorted by thumbs up", Toast.LENGTH_LONG).show()
             uDAdapter.notifyDataSetChanged()
-        }
-        else{
+        } else {
             definitions = ArrayList(definitions.sortedByDescending { it.thumbs_down })
             uDAdapter.definitionList = definitions
-            Toast.makeText(getApplication(),"Sorted by thumbs down", Toast.LENGTH_LONG).show()
+            Toast.makeText(getApplication(), "Sorted by thumbs down", Toast.LENGTH_LONG).show()
 
             uDAdapter.notifyDataSetChanged()
         }
