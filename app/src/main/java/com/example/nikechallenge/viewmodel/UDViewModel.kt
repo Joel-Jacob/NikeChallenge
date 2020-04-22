@@ -2,7 +2,9 @@ package com.example.nikechallenge.viewmodel
 
 import android.app.Application
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.MutableLiveData
 import com.example.nikechallenge.adapter.UDAdapter
 import com.example.nikechallenge.model.X
 import com.example.nikechallenge.network.UDRetrofit
@@ -13,7 +15,12 @@ import io.reactivex.schedulers.Schedulers
 class UDViewModel(application: Application) : AndroidViewModel(application) {
     val uDRetrofit = UDRetrofit()
     val uDAdapter = UDAdapter()
-    val compositeDisposable = CompositeDisposable() //TODO:Dispose of this
+    var upDownBoolean = true
+    val compositeDisposable = CompositeDisposable()
+    val spinner : MutableLiveData<Boolean> by lazy {
+        MutableLiveData<Boolean>()
+    }
+    var definitions = ArrayList<X>()
 
     fun getDefinitions(word: String){
         compositeDisposable.add(
@@ -22,21 +29,43 @@ class UDViewModel(application: Application) : AndroidViewModel(application) {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({response->
-//                    response.list = response.list.sortedByDescending { it.thumbs_down }
                     for (item in response.list){
                         item.definition = item.definition.replace("[","")
                         item.definition = item.definition.replace("]","")
-                        item.definition = item.definition.replace("/n","")
-                        item.definition = item.definition.replace("/r","")
-
-                        Log.d("TAG_X",item.thumbs_up.toString())
                     }
                     uDAdapter.definitionList = ArrayList(response.list)
+                    definitions = uDAdapter.definitionList
                     uDAdapter.notifyDataSetChanged()
+                    spinner.value = true
                 },{
-                    //TODO:handle error
-                    Log.d("TAG_X", "Error: ${it.cause}")
+                    Toast.makeText(getApplication(),"There was an error loading definitions", Toast.LENGTH_LONG).show()
+                    spinner.value = true
+                    Log.d("TAG_X", "Error: ${it.message}")
                 })
         )
+    }
+
+    fun sortList(){
+        //up: true
+        //down: false
+        if(upDownBoolean){
+            definitions = ArrayList(definitions.sortedByDescending { it.thumbs_up })
+            uDAdapter.definitionList = definitions
+            Toast.makeText(getApplication(),"Sorted by thumbs up", Toast.LENGTH_LONG).show()
+            uDAdapter.notifyDataSetChanged()
+        }
+        else{
+            definitions = ArrayList(definitions.sortedByDescending { it.thumbs_down })
+            uDAdapter.definitionList = definitions
+            Toast.makeText(getApplication(),"Sorted by thumbs down", Toast.LENGTH_LONG).show()
+
+            uDAdapter.notifyDataSetChanged()
+        }
+        upDownBoolean = !upDownBoolean
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        compositeDisposable.dispose()
     }
 }

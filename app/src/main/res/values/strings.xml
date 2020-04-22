@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">NikeChallenge</string>
+    <string name="type_any_word">Type any word...</string>
+    <string name="search">search</string>
+    <string name="thumbs_down">thumbs_down</string>
+    <string name="thumbs_up">thumbs_up</string>
 </resources>
