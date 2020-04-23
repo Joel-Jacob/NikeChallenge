@@ -5,7 +5,7 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
-class UDRepository {
+open class UDRepository {
     fun getDefinitionsList(word: String) : Observable<UDResponse>{
         return UDRetrofit
             .getDefinitionResponse(word)
