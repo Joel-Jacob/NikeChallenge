@@ -25,11 +25,11 @@ class UDViewModel constructor(private val udRepository: UDRepository): ViewModel
 
     private val errorMutableLiveData = MutableLiveData<Boolean>()
     val errorLiveData: LiveData<Boolean>
-        get() = spinnerMutableLiveData
+        get() = errorMutableLiveData
 
     private val thumbsMutableLiveData = MutableLiveData<Boolean>()
     val thumbsLiveData: LiveData<Boolean>
-        get() = spinnerMutableLiveData
+        get() = thumbsMutableLiveData
 
     fun getDefinitions(word: String) {
         spinnerMutableLiveData.value = true
