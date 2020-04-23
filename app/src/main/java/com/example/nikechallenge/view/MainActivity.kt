@@ -9,7 +9,9 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.nikechallenge.R
 import com.example.nikechallenge.databinding.ActivityMainBinding
+import com.example.nikechallenge.network.UDRepository
 import com.example.nikechallenge.viewmodel.UDViewModel
+import com.example.nikechallenge.viewmodel.UDViewModelFactory
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -19,7 +21,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewModel = ViewModelProvider(this).get(UDViewModel::class.java)
+        viewModel =
+            ViewModelProvider(this, UDViewModelFactory(UDRepository())).get(UDViewModel::class.java)
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         binding?.udViewmodel = viewModel
@@ -28,11 +31,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setUp() {
-        searchButton.setOnClickListener {
-            loadingSpinner.visibility = View.VISIBLE
-            viewModel.getDefinitions(searchInput.text.toString())
-            recyclerView.smoothScrollToPosition(0)
-        }
+        viewModel.searchDefinitions(searchView)
 
         thumbsButton.setOnClickListener {
             viewModel.sortList()
@@ -40,7 +39,10 @@ class MainActivity : AppCompatActivity() {
         }
 
         val spinnerObserver = Observer<Boolean> {
-            loadingSpinner.visibility = View.GONE
+            if (it)
+                loadingSpinner.visibility = View.VISIBLE
+            else
+                loadingSpinner.visibility = View.GONE
         }
 
         val errorObserver = Observer<Boolean> {
@@ -52,7 +54,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         val thumbsObserver = Observer<Boolean> {
-            if(it)
+            if (it)
                 Toast.makeText(getApplication(), "Sorted by thumbs up", Toast.LENGTH_LONG).show()
             else
                 Toast.makeText(getApplication(), "Sorted by thumbs down", Toast.LENGTH_LONG).show()

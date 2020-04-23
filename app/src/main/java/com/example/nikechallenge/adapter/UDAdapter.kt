@@ -10,7 +10,7 @@ import com.example.nikechallenge.model.Definition
 import kotlinx.android.synthetic.main.definition_layout.view.*
 
 class UDAdapter: RecyclerView.Adapter<UDAdapter.DefinitionViewHolder>() {
-    var definitionList = ArrayList<Definition>()
+    var definitionList : MutableList<Definition> = mutableListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DefinitionViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.definition_layout, parent, false)
