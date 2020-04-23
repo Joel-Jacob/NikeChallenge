@@ -1,6 +1,6 @@
 package com.example.nikechallenge.model
 
-data class X(
+data class Definition(
     val author: String,
     val current_vote: String,
     val defid: Int,

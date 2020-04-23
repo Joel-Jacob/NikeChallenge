@@ -6,7 +6,7 @@ import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.example.nikechallenge.adapter.UDAdapter
-import com.example.nikechallenge.model.X
+import com.example.nikechallenge.model.Definition
 import com.example.nikechallenge.network.UDRetrofit
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -17,10 +17,19 @@ class UDViewModel(application: Application) : AndroidViewModel(application) {
     val uDAdapter = UDAdapter()
     var upDownBoolean = true
     val compositeDisposable = CompositeDisposable()
+    var definitions = ArrayList<Definition>()
+
     val spinner: MutableLiveData<Boolean> by lazy {
         MutableLiveData<Boolean>()
     }
-    var definitions = ArrayList<X>()
+
+    val error: MutableLiveData<Boolean> by lazy {
+        MutableLiveData<Boolean>()
+    }
+
+    val thumbs: MutableLiveData<Boolean> by lazy {
+        MutableLiveData<Boolean>()
+    }
 
     fun getDefinitions(word: String) {
         compositeDisposable.add(
@@ -38,11 +47,7 @@ class UDViewModel(application: Application) : AndroidViewModel(application) {
                     uDAdapter.notifyDataSetChanged()
                     spinner.value = true
                 }, {
-                    Toast.makeText(
-                        getApplication(),
-                        "There was an error loading definitions",
-                        Toast.LENGTH_LONG
-                    ).show()
+                    error.value = true
                     spinner.value = true
                     Log.d("TAG_X", "Error: ${it.message}")
                 })
@@ -55,13 +60,12 @@ class UDViewModel(application: Application) : AndroidViewModel(application) {
         if (upDownBoolean) {
             definitions = ArrayList(definitions.sortedByDescending { it.thumbs_up })
             uDAdapter.definitionList = definitions
-            Toast.makeText(getApplication(), "Sorted by thumbs up", Toast.LENGTH_LONG).show()
+            thumbs.value = true
             uDAdapter.notifyDataSetChanged()
         } else {
             definitions = ArrayList(definitions.sortedByDescending { it.thumbs_down })
             uDAdapter.definitionList = definitions
-            Toast.makeText(getApplication(), "Sorted by thumbs down", Toast.LENGTH_LONG).show()
-
+            thumbs.value = false
             uDAdapter.notifyDataSetChanged()
         }
         upDownBoolean = !upDownBoolean

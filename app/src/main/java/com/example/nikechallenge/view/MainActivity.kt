@@ -3,6 +3,7 @@ package com.example.nikechallenge.view
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -42,6 +43,24 @@ class MainActivity : AppCompatActivity() {
             loadingSpinner.visibility = View.GONE
         }
 
+        val errorObserver = Observer<Boolean> {
+            Toast.makeText(
+                this,
+                "There was an error loading definitions",
+                Toast.LENGTH_LONG
+            ).show()
+        }
+
+        val thumbsObserver = Observer<Boolean> {
+            if(it)
+                Toast.makeText(getApplication(), "Sorted by thumbs up", Toast.LENGTH_LONG).show()
+            else
+                Toast.makeText(getApplication(), "Sorted by thumbs down", Toast.LENGTH_LONG).show()
+        }
+
         viewModel.spinner.observe(this, spinnerObserver)
+        viewModel.error.observe(this, errorObserver)
+        viewModel.thumbs.observe(this, thumbsObserver)
+
     }
 }
