@@ -2,6 +2,7 @@ package com.example.nikechallenge.viewmodel
 
 import android.util.Log
 import androidx.appcompat.widget.SearchView
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.nikechallenge.adapter.UDAdapter
@@ -18,20 +19,20 @@ class UDViewModel constructor(private val udRepository: UDRepository): ViewModel
     private val compositeDisposable = CompositeDisposable()
     var definitions: MutableList<Definition> = mutableListOf()
 
-    val spinner: MutableLiveData<Boolean> by lazy {
-        MutableLiveData<Boolean>()
-    }
+    private val spinnerMutableLiveData = MutableLiveData<Boolean>()
+    val spinnerLiveData: LiveData<Boolean>
+        get() = spinnerMutableLiveData
 
-    val error: MutableLiveData<Boolean> by lazy {
-        MutableLiveData<Boolean>()
-    }
+    private val errorMutableLiveData = MutableLiveData<Boolean>()
+    val errorLiveData: LiveData<Boolean>
+        get() = spinnerMutableLiveData
 
-    val thumbs: MutableLiveData<Boolean> by lazy {
-        MutableLiveData<Boolean>()
-    }
+    private val thumbsMutableLiveData = MutableLiveData<Boolean>()
+    val thumbsLiveData: LiveData<Boolean>
+        get() = spinnerMutableLiveData
 
     fun getDefinitions(word: String) {
-        spinner.value = true
+        spinnerMutableLiveData.value = true
         compositeDisposable.add(
             udRepository
                 .getDefinitionsList(word)
@@ -43,10 +44,10 @@ class UDViewModel constructor(private val udRepository: UDRepository): ViewModel
                     uDAdapter.definitionList = response.list
                     definitions = response.list
                     uDAdapter.notifyDataSetChanged()
-                    spinner.value = false
+                    spinnerMutableLiveData.value = false
                 }, {
-                    error.value = true
-                    spinner.value = false
+                    errorMutableLiveData.value = true
+                    spinnerMutableLiveData.value = false
                     Log.d("TAG_X", "Error: ${it.message}")
                 })
         )
@@ -60,14 +61,14 @@ class UDViewModel constructor(private val udRepository: UDRepository): ViewModel
                 it.thumbs_up
             }
             uDAdapter.definitionList = definitions
-            thumbs.value = true
+            thumbsMutableLiveData.value = true
             uDAdapter.notifyDataSetChanged()
         } else {
             definitions.sortByDescending {
                 it.thumbs_down
             }
             uDAdapter.definitionList = definitions
-            thumbs.value = false
+            thumbsMutableLiveData.value = false
             uDAdapter.notifyDataSetChanged()
         }
         upDownBoolean = !upDownBoolean

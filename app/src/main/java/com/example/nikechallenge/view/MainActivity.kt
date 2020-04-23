@@ -55,14 +55,14 @@ class MainActivity : AppCompatActivity() {
 
         val thumbsObserver = Observer<Boolean> {
             if (it)
-                Toast.makeText(getApplication(), "Sorted by thumbs up", Toast.LENGTH_LONG).show()
+                Toast.makeText(application, "Sorted by thumbs up", Toast.LENGTH_LONG).show()
             else
-                Toast.makeText(getApplication(), "Sorted by thumbs down", Toast.LENGTH_LONG).show()
+                Toast.makeText(application, "Sorted by thumbs down", Toast.LENGTH_LONG).show()
         }
 
-        viewModel.spinner.observe(this, spinnerObserver)
-        viewModel.error.observe(this, errorObserver)
-        viewModel.thumbs.observe(this, thumbsObserver)
+        viewModel.spinnerLiveData.observe(this, spinnerObserver)
+        viewModel.errorLiveData.observe(this, errorObserver)
+        viewModel.thumbsLiveData.observe(this, thumbsObserver)
 
     }
 }
