@@ -1,10 +1,8 @@
 package com.example.nikechallenge.viewmodel
 
-import android.app.Application
 import android.util.Log
-import android.widget.Toast
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import com.example.nikechallenge.adapter.UDAdapter
 import com.example.nikechallenge.model.Definition
 import com.example.nikechallenge.network.UDRetrofit
@@ -12,8 +10,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 
-class UDViewModel(application: Application) : AndroidViewModel(application) {
-    val uDRetrofit = UDRetrofit()
+class UDViewModel: ViewModel() {
     val uDAdapter = UDAdapter()
     var upDownBoolean = true
     val compositeDisposable = CompositeDisposable()
@@ -33,7 +30,7 @@ class UDViewModel(application: Application) : AndroidViewModel(application) {
 
     fun getDefinitions(word: String) {
         compositeDisposable.add(
-            uDRetrofit
+            UDRetrofit
                 .getDefinitionResponse(word)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
