@@ -5,7 +5,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
-import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.filters.LargeTest
 import androidx.test.rule.ActivityTestRule
@@ -29,33 +28,6 @@ class MainActivityTest {
 
     @Test
     fun mainActivityTest() {
-        val editText = onView(
-            allOf(
-                withId(R.id.searchInput), withText("Type any word..."),
-                childAtPosition(
-                    childAtPosition(
-                        withId(R.id.searchInputLayout),
-                        0
-                    ),
-                    0
-                ),
-                isDisplayed()
-            )
-        )
-        val editText2 = onView(
-            allOf(
-                withId(R.id.searchInput), withText("Type any word..."),
-                childAtPosition(
-                    childAtPosition(
-                        withId(R.id.searchInputLayout),
-                        0
-                    ),
-                    0
-                ),
-                isDisplayed()
-            )
-        )
-
         val textInputEditText = onView(
             allOf(
                 withId(R.id.searchInput),
